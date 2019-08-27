@@ -1,7 +1,9 @@
 package cd.zzh.community.controller;
 
 import cd.zzh.community.dto.PaginationDTO;
+import cd.zzh.community.model.Notification;
 import cd.zzh.community.model.User;
+import cd.zzh.community.service.NotificationService;
 import cd.zzh.community.service.QuestionServive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,12 +13,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class ProfileController {
 
     @Autowired
     private QuestionServive questionServive;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
@@ -33,13 +39,16 @@ public class ProfileController {
         if("questions".equals(action)){
             model.addAttribute("section","questions");
             model.addAttribute("sectionName","我的提问");
+            PaginationDTO paginationDTO = questionServive.list(user.getId(), page, size);
+            model.addAttribute("pagination",paginationDTO);
         }else if ("replies".equals(action)){
+            PaginationDTO paginationDTO = notificationService.list(user.getId(),page,size);
             model.addAttribute("section","replies");
+            model.addAttribute("pagination",paginationDTO);
             model.addAttribute("sectionName","我的回复");
         }
 
-        PaginationDTO paginationDTO = questionServive.list(user.getId(), page, size);
-        model.addAttribute("pagination",paginationDTO);
+
         return "profile";
     }
 }
