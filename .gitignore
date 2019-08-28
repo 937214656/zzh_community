@@ -4,7 +4,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-
+logs/
+logs/community.log
 ### STS ###
 .apt_generated
 .classpath
